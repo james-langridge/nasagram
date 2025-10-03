@@ -1,7 +1,9 @@
 // Rover profile header component
 // Displays Instagram-like profile information for a Mars rover
 
+import Link from "next/link";
 import type { RoverProfile } from "@/lib/constants/rovers";
+import { ACTIVE_ROVERS } from "@/lib/constants/rovers";
 
 interface RoverHeaderProps {
   readonly profile: RoverProfile;
@@ -83,6 +85,28 @@ export function RoverHeader({ profile }: RoverHeaderProps) {
                 )}
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Other rovers section - Instagram-like story circles */}
+        <div className="mt-6 border-t border-gray-200 pt-4">
+          <div className="flex gap-4 overflow-x-auto">
+            {ACTIVE_ROVERS.filter((r) => r.id !== profile.id).map((rover) => (
+              <Link
+                key={rover.id}
+                href={`/${rover.id}`}
+                className="flex flex-col items-center flex-shrink-0 group"
+              >
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center mb-1 group-hover:opacity-80 transition-opacity">
+                  <span className="text-xl text-white font-bold">
+                    {rover.displayName.charAt(0)}
+                  </span>
+                </div>
+                <span className="text-xs text-gray-900 text-center max-w-[64px] truncate">
+                  {rover.displayName}
+                </span>
+              </Link>
+            ))}
           </div>
         </div>
       </div>

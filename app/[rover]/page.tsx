@@ -9,6 +9,7 @@ import { PhotoGrid } from "@/components/feed/PhotoGrid";
 import { RoverHeader } from "@/components/rover/RoverHeader";
 import { CameraFilter } from "@/components/common/CameraFilter";
 import { DateNavigation } from "@/components/common/DateNavigation";
+import { ViewToggle } from "@/components/common/ViewToggle";
 import { ROVER_PROFILES, isValidRoverId } from "@/lib/constants/rovers";
 import { notFound } from "next/navigation";
 import { useViewMode } from "@/lib/providers/view-mode-provider";
@@ -89,6 +90,13 @@ export default function RoverPage({ params }: RoverPageProps) {
           </div>
         ) : (
           <>
+            {/* View toggle - Instagram style positioning */}
+            <div className="border-b border-gray-200 bg-white">
+              <div className="max-w-2xl mx-auto px-4 py-3 flex justify-center">
+                <ViewToggle />
+              </div>
+            </div>
+
             <PhotoGrid photos={allPhotos} viewMode={viewMode} />
 
             {hasNextPage && (

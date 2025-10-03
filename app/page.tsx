@@ -1,8 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useInfinitePhotos } from "@/lib/hooks/useMarsPhotos";
 import { PhotoGrid } from "@/components/feed/PhotoGrid";
+import { ViewToggle } from "@/components/common/ViewToggle";
 import { useViewMode } from "@/lib/providers/view-mode-provider";
+import { ACTIVE_ROVERS } from "@/lib/constants/rovers";
 
 export default function Home() {
   const { viewMode } = useViewMode();
@@ -51,6 +54,30 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Rover profiles - Instagram-like story circles */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-2xl mx-auto px-4 py-8">
+          <div className="flex gap-10 overflow-x-auto">
+            {ACTIVE_ROVERS.map((rover) => (
+              <Link
+                key={rover.id}
+                href={`/${rover.id}`}
+                className="flex flex-col items-center flex-shrink-0 group"
+              >
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center mb-1 group-hover:opacity-80 transition-opacity">
+                  <span className="text-xl text-white font-bold">
+                    {rover.displayName.charAt(0)}
+                  </span>
+                </div>
+                <span className="text-xs text-gray-900 text-center max-w-[64px] truncate">
+                  {rover.displayName}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
       <main className="pb-8">
         {isPending ? (
           <div className="max-w-2xl mx-auto p-4">
@@ -66,6 +93,13 @@ export default function Home() {
           </div>
         ) : (
           <>
+            {/* View toggle - Instagram style positioning */}
+            <div className="border-b border-gray-200 bg-white">
+              <div className="max-w-2xl mx-auto px-4 py-3 flex justify-center">
+                <ViewToggle />
+              </div>
+            </div>
+
             <PhotoGrid photos={allPhotos} viewMode={viewMode} />
 
             {hasNextPage && (
