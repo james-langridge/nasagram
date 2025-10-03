@@ -60,8 +60,6 @@ export function useInfinitePhotos(
     },
     getNextPageParam: (lastPage) => lastPage.nextPage,
     initialPageParam: 1,
-    retry: 3,
-    staleTime: 0,
-    refetchOnMount: true,
+    enabled: true, // Explicitly enable the query
   });
 }
