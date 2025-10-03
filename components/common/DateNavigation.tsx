@@ -75,7 +75,7 @@ export function DateNavigation({
           />
 
           {/* Dropdown menu */}
-          <div className="absolute top-full mt-2 left-0 right-0 sm:left-0 sm:right-auto z-20 bg-white border border-gray-200 rounded-lg shadow-lg sm:min-w-[300px] p-4">
+          <div className="absolute top-full mt-2 right-0 sm:left-0 sm:right-auto z-20 bg-white border border-gray-200 rounded-lg shadow-lg min-w-[300px] p-4">
             <h3 className="text-sm font-semibold mb-3">Browse by Date</h3>
 
             <form onSubmit={handleSubmit} className="space-y-3">

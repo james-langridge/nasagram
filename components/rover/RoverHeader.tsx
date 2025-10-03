@@ -36,18 +36,18 @@ export function RoverHeader({ profile }: RoverHeaderProps) {
             <p className="text-sm text-gray-500 mb-3">{profile.username}</p>
 
             {/* Stats */}
-            <div className="flex gap-2 sm:gap-4 mb-3 text-sm">
-              <div className="whitespace-nowrap">
-                <span className="font-semibold">{profile.stats.posts}</span>
-                <span className="text-gray-500 ml-1">photos</span>
+            <div className="flex gap-3 sm:gap-4 mb-3 text-xs sm:text-sm">
+              <div>
+                <span className="font-semibold block sm:inline">{profile.stats.posts}</span>
+                <span className="text-gray-500 block sm:inline sm:ml-1">photos</span>
               </div>
-              <div className="whitespace-nowrap">
-                <span className="font-semibold">{profile.stats.followers}</span>
-                <span className="text-gray-500 ml-1">followers</span>
+              <div>
+                <span className="font-semibold block sm:inline">{profile.stats.followers}</span>
+                <span className="text-gray-500 block sm:inline sm:ml-1">followers</span>
               </div>
-              <div className="whitespace-nowrap">
-                <span className="font-semibold">{profile.stats.following}</span>
-                <span className="text-gray-500 ml-1">following</span>
+              <div>
+                <span className="font-semibold block sm:inline">{profile.stats.following}</span>
+                <span className="text-gray-500 block sm:inline sm:ml-1">following</span>
               </div>
             </div>
 
