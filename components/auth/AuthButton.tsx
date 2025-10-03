@@ -1,12 +1,16 @@
-import { auth } from "@/lib/auth";
+"use client";
+
 import { Heart } from "lucide-react";
 import { signIn, signOut } from "@/lib/auth-actions";
 import Image from "next/image";
 import Link from "next/link";
+import type { Session } from "next-auth";
 
-export async function AuthButton() {
-  const session = await auth();
+interface AuthButtonProps {
+  session: Session | null;
+}
 
+export function AuthButton({ session }: AuthButtonProps) {
   if (session?.user) {
     return (
       <div className="flex items-center gap-4">

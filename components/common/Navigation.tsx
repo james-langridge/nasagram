@@ -3,8 +3,13 @@
 import { AuthButton } from "@/components/auth/AuthButton";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { Session } from "next-auth";
 
-export function Navigation() {
+interface NavigationProps {
+  session: Session | null;
+}
+
+export function Navigation({ session }: NavigationProps) {
   const pathname = usePathname();
 
   // Hide navigation on photo detail pages for immersive viewing
@@ -22,7 +27,7 @@ export function Navigation() {
             </h1>
           </Link>
           <div className="flex items-center space-x-4">
-            <AuthButton />
+            <AuthButton session={session} />
           </div>
         </div>
       </div>
