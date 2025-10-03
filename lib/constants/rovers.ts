@@ -51,38 +51,6 @@ export const ROVER_PROFILES: Record<string, RoverProfile> = {
     location: "Jezero Crater",
     status: "active",
   },
-  opportunity: {
-    id: "opportunity",
-    username: "@opportunity_rover",
-    displayName: "Opportunity",
-    bio: "Mars explorer 2004-2018 ⭐ | Meridiani Planum | 15-year mission complete",
-    verified: true,
-    avatar: "/rovers/opportunity-avatar.jpg",
-    stats: {
-      posts: "180K+",
-      followers: "1.5M",
-      following: "2",
-    },
-    landingDate: "2004-01-25",
-    location: "Meridiani Planum",
-    status: "complete",
-  },
-  spirit: {
-    id: "spirit",
-    username: "@spirit_rover",
-    displayName: "Spirit",
-    bio: "Mars explorer 2004-2010 ⭐ | Gusev Crater | Twin of Opportunity",
-    verified: true,
-    avatar: "/rovers/spirit-avatar.jpg",
-    stats: {
-      posts: "124K+",
-      followers: "1.2M",
-      following: "2",
-    },
-    landingDate: "2004-01-04",
-    location: "Gusev Crater",
-    status: "complete",
-  },
 } as const;
 
 export const ACTIVE_ROVERS = Object.values(ROVER_PROFILES).filter(

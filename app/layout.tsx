@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "MarsGram - Mars Rover Photos",
   description:
-    "Instagram for Mars Rover photos - Browse stunning images from Curiosity, Perseverance, and other NASA rovers",
+    "Instagram for Mars Rover photos - Browse stunning images from Curiosity and Perseverance rovers",
 };
 
 export default async function RootLayout({

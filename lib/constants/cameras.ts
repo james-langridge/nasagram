@@ -46,20 +46,6 @@ export const ROVER_CAMERAS: Record<string, readonly CameraInfo[]> = {
     { name: "SKYCAM", fullName: "MEDA Skycam" },
     { name: "SHERLOC_WATSON", fullName: "SHERLOC WATSON Camera" },
   ],
-  opportunity: [
-    { name: "FHAZ", fullName: "Front Hazard Avoidance Camera" },
-    { name: "RHAZ", fullName: "Rear Hazard Avoidance Camera" },
-    { name: "NAVCAM", fullName: "Navigation Camera" },
-    { name: "PANCAM", fullName: "Panoramic Camera" },
-    { name: "MINITES", fullName: "Miniature Thermal Emission Spectrometer" },
-  ],
-  spirit: [
-    { name: "FHAZ", fullName: "Front Hazard Avoidance Camera" },
-    { name: "RHAZ", fullName: "Rear Hazard Avoidance Camera" },
-    { name: "NAVCAM", fullName: "Navigation Camera" },
-    { name: "PANCAM", fullName: "Panoramic Camera" },
-    { name: "MINITES", fullName: "Miniature Thermal Emission Spectrometer" },
-  ],
 } as const;
 
 // Get cameras for a specific rover
