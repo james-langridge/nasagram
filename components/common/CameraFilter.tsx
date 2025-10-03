@@ -76,7 +76,7 @@ export function CameraFilter({
           />
 
           {/* Dropdown menu */}
-          <div className="absolute top-full mt-2 left-0 z-20 bg-white border border-gray-200 rounded-lg shadow-lg min-w-[280px] max-h-[400px] overflow-y-auto">
+          <div className="absolute top-full mt-2 left-0 right-0 sm:left-0 sm:right-auto z-20 bg-white border border-gray-200 rounded-lg shadow-lg sm:min-w-[280px] max-h-[400px] overflow-y-auto">
             <div className="py-1">
               {/* All cameras option */}
               <button
