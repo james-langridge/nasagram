@@ -21,12 +21,14 @@ interface ShareButtonProps {
   readonly photo: Photo;
   readonly className?: string;
   readonly dropdownPosition?: "above" | "below";
+  readonly dropdownAlign?: "left" | "right";
 }
 
 export function ShareButton({
   photo,
   className = "",
   dropdownPosition = "above",
+  dropdownAlign = "left",
 }: ShareButtonProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
@@ -92,7 +94,7 @@ export function ShareButton({
 
           {/* Menu */}
           <div
-            className={`absolute ${dropdownPosition === "above" ? "bottom-full mb-2" : "top-full mt-2"} left-0 z-20 bg-white border border-gray-200 rounded-lg shadow-lg min-w-[200px]`}
+            className={`absolute ${dropdownPosition === "above" ? "bottom-full mb-2" : "top-full mt-2"} ${dropdownAlign === "left" ? "left-0" : "right-0"} z-20 bg-white border border-gray-200 rounded-lg shadow-lg min-w-[200px]`}
           >
             <div className="py-1">
               {/* Native share (mobile) */}

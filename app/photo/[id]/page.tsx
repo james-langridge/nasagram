@@ -103,6 +103,7 @@ export default function PhotoDetailPage({ params }: PhotoDetailPageProps) {
                 photo={photo}
                 className="text-white"
                 dropdownPosition="below"
+                dropdownAlign="right"
               />
             </div>
           </div>
