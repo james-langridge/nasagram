@@ -3,6 +3,7 @@
 // React hook for fetching Mars photos with infinite scroll
 // Orchestrates API calls with React Query
 
+import { useEffect, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import type { Photo } from "mars-photo-sdk";
 
@@ -50,7 +51,15 @@ export function useInfinitePhotos(
   camera: string | null = null,
   date: string | null = null,
 ) {
-  return useInfiniteQuery({
+  // Only enable query on client side to prevent SSR/hydration issues
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    console.log('[useInfinitePhotos] Client mounted');
+    setIsClient(true);
+  }, []);
+
+  const query = useInfiniteQuery({
     queryKey: ["photos", rover, camera, date],
     queryFn: async ({ pageParam = 1 }) => {
       console.log('[useInfinitePhotos] Fetching:', { rover, camera, date, page: pageParam });
@@ -60,6 +69,11 @@ export function useInfinitePhotos(
     },
     getNextPageParam: (lastPage) => lastPage.nextPage,
     initialPageParam: 1,
-    enabled: true, // Explicitly enable the query
+    enabled: isClient, // Only run on client
+    refetchOnMount: true,
   });
+
+  console.log('[useInfinitePhotos] Query state:', { isClient, enabled: isClient, isPending: query.isPending, isFetching: query.isFetching });
+
+  return query;
 }
