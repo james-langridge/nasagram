@@ -14,9 +14,13 @@ interface PhotosResponse {
 async function fetchPhotosFromAPI(
   rover: string | null,
   page: number,
+  camera: string | null = null,
+  date: string | null = null,
 ): Promise<PhotosResponse> {
   const params = new URLSearchParams();
   if (rover) params.append("rover", rover);
+  if (camera) params.append("camera", camera);
+  if (date) params.append("date", date);
   params.append("page", page.toString());
 
   const response = await fetch(`/api/photos?${params.toString()}`);
@@ -28,10 +32,15 @@ async function fetchPhotosFromAPI(
   return response.json();
 }
 
-export function useInfinitePhotos(rover: string | null = null) {
+export function useInfinitePhotos(
+  rover: string | null = null,
+  camera: string | null = null,
+  date: string | null = null,
+) {
   return useInfiniteQuery({
-    queryKey: ["photos", rover],
-    queryFn: ({ pageParam = 1 }) => fetchPhotosFromAPI(rover, pageParam),
+    queryKey: ["photos", rover, camera, date],
+    queryFn: ({ pageParam = 1 }) =>
+      fetchPhotosFromAPI(rover, pageParam, camera, date),
     getNextPageParam: (lastPage) => lastPage.nextPage,
     initialPageParam: 1,
   });

@@ -55,17 +55,27 @@ export async function fetchMarsPhotos(
 export async function fetchLatestPhotos(
   rover: string,
   page: number = 1,
+  camera?: string | null,
+  date?: string | null,
 ): Promise<PhotosResponse> {
   const client = getClient();
 
-  // Get latest manifest to find most recent sol
-  const manifest = await client.manifests.get(rover);
-  const latestSol = manifest.maxSol || manifest.max_sol || 1000;
+  // Determine which date to use
+  let targetDate: string;
+  if (date) {
+    // Use provided date (could be Earth date YYYY-MM-DD or sol number)
+    targetDate = date;
+  } else {
+    // Get latest manifest to find most recent sol
+    const manifest = await client.manifests.get(rover);
+    targetDate = (manifest.maxSol || manifest.max_sol || 1000).toString();
+  }
 
   return fetchMarsPhotos({
     rover,
-    date: latestSol.toString(),
+    date: targetDate,
     page,
+    camera: camera || undefined,
   });
 }
 

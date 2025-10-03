@@ -4,6 +4,7 @@ import { useInfinitePhotos } from "@/lib/hooks/useMarsPhotos";
 import { PhotoGrid } from "@/components/feed/PhotoGrid";
 
 export default function Home() {
+  // Home page shows mixed feed, no camera or date filter
   const {
     data,
     isLoading,
@@ -11,7 +12,7 @@ export default function Home() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfinitePhotos(null);
+  } = useInfinitePhotos(null, null, null);
 
   // Flatten all pages into single array
   const allPhotos = data?.pages.flatMap((page) => page.photos) || [];
