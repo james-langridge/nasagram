@@ -88,16 +88,6 @@ export async function fetchLatestPhotos(
 
   // When camera filter is active, use manifest to find sols with that camera
   if (camera) {
-    console.log(
-      `[fetchLatestPhotos] Manifest has ${manifest.photos.length} sols total`,
-    );
-    console.log(
-      `[fetchLatestPhotos] Latest 5 sols in manifest:`,
-      manifest.photos
-        .slice(-5)
-        .map((p) => ({ sol: p.sol, cameras: p.cameras })),
-    );
-
     // Find all sols that have photos from this camera, sorted newest first
     const solsWithCamera = manifest.photos
       .filter((p) => {
@@ -110,23 +100,10 @@ export async function fetchLatestPhotos(
       .map((p) => p.sol)
       .sort((a, b) => b - a); // newest first
 
-    console.log(
-      `[fetchLatestPhotos] Camera ${camera}: found ${solsWithCamera.length} sols`,
-    );
-    console.log(
-      `[fetchLatestPhotos] First 10 sols with ${camera}:`,
-      solsWithCamera.slice(0, 10),
-    );
-
     // Paginate through the filtered sols (2 per page)
     const SOLS_PER_PAGE = 2;
     const startIndex = (page - 1) * SOLS_PER_PAGE;
     solsToFetch = solsWithCamera.slice(startIndex, startIndex + SOLS_PER_PAGE);
-
-    console.log(
-      `[fetchLatestPhotos] Fetching sols for page ${page}:`,
-      solsToFetch,
-    );
 
     // No more sols with this camera
     if (solsToFetch.length === 0) {
@@ -150,12 +127,14 @@ export async function fetchLatestPhotos(
   }
 
   // Fetch photos from the selected sols
+  // Note: When camera filter is active, we already selected sols from manifest
+  // Don't pass camera param because API uses specific names (CHEMCAM_RMI not CHEMCAM)
   const promises = solsToFetch.map((sol) =>
     fetchMarsPhotos({
       rover,
       date: sol.toString(),
       page: 1,
-      camera: camera || undefined,
+      camera: undefined, // Always undefined - we filter after fetching
     }).catch((error) => {
       console.error(`Failed to fetch ${rover} sol ${sol}:`, error);
       return { photos: [], nextPage: null };
@@ -166,7 +145,17 @@ export async function fetchLatestPhotos(
   const results = await Promise.all(promises);
 
   // Combine all photos from all sols
-  const allPhotos = results.flatMap((r) => r.photos);
+  let allPhotos = results.flatMap((r) => r.photos);
+
+  // Filter by camera if specified (client-side filtering)
+  // Photos API uses specific names (CHEMCAM_RMI) but we filter by prefix (CHEMCAM)
+  if (camera) {
+    const cameraUpper = camera.toUpperCase();
+    allPhotos = allPhotos.filter((photo) => {
+      const photoCamera = photo.camera.name.toUpperCase();
+      return photoCamera.startsWith(cameraUpper);
+    });
+  }
 
   // Sort by earth date descending (newest first)
   const sortedPhotos = [...allPhotos].sort((a, b) => {
