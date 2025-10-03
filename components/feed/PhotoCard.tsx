@@ -7,6 +7,7 @@ import {
   generateBlurDataUrl,
 } from "@/lib/calculations/photo-utils";
 import { ROVER_PROFILES } from "@/lib/constants/rovers";
+import { FavoriteButton } from "./FavoriteButton";
 
 interface PhotoCardProps {
   readonly photo: Photo;
@@ -68,21 +69,9 @@ export function PhotoCard({ photo }: PhotoCardProps) {
       {/* Action buttons */}
       <div className="p-3">
         <div className="flex items-center mb-2">
-          <button className="mr-4 hover:text-gray-500" aria-label="Like">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-              />
-            </svg>
-          </button>
+          <div className="mr-4">
+            <FavoriteButton photo={photo} />
+          </div>
           <button className="mr-4 hover:text-gray-500" aria-label="Share">
             <svg
               className="w-6 h-6"
