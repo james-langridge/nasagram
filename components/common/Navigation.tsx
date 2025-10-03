@@ -1,7 +1,17 @@
+"use client";
+
 import { AuthButton } from "@/components/auth/AuthButton";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function Navigation() {
+  const pathname = usePathname();
+
+  // Hide navigation on photo detail pages for immersive viewing
+  if (pathname?.startsWith("/photo/")) {
+    return null;
+  }
+
   return (
     <nav className="border-b border-gray-200 bg-white sticky top-0 z-10">
       <div className="max-w-2xl mx-auto px-4 py-3">
