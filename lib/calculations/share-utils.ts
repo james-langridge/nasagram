@@ -5,7 +5,9 @@ import type { Photo } from "mars-photo-sdk";
 
 // Generate shareable URL for a photo
 export function generateShareUrl(photoId: number): string {
-  const baseUrl = process.env.NEXT_PUBLIC_URL || "https://nasagram.vercel.app";
+  const baseUrl = (
+    process.env.NEXT_PUBLIC_URL || "https://nasagram.vercel.app"
+  ).replace(/\/$/, "");
   return `${baseUrl}/photo/${photoId}`;
 }
 
