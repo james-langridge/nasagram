@@ -30,10 +30,19 @@ export function PhotoCard({ photo }: PhotoCardProps) {
 
     if (isNavigating) return; // Prevent double-clicks
 
-    setIsNavigating(true);
-
     try {
-      // Cache photo and wait for completion
+      // Check if photo is already cached
+      const checkResponse = await fetch(`/api/photos/${photo.id}`);
+
+      if (checkResponse.ok) {
+        // Already cached - navigate immediately without spinner
+        router.push(`/photo/${photo.id}`);
+        return;
+      }
+
+      // Not cached - show spinner and cache it
+      setIsNavigating(true);
+
       await fetch("/api/photos/cache", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -43,7 +52,7 @@ export function PhotoCard({ photo }: PhotoCardProps) {
       // Navigate after caching completes
       router.push(`/photo/${photo.id}`);
     } catch (error) {
-      console.error("Failed to cache photo:", error);
+      console.error("Failed to handle photo click:", error);
       setIsNavigating(false);
       // Still navigate even if cache fails
       router.push(`/photo/${photo.id}`);

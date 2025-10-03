@@ -35,10 +35,19 @@ export function PhotoGrid({ photos, viewMode = "feed" }: PhotoGridProps) {
 
       if (cachingPhotoId === photo.id) return; // Prevent double-clicks
 
-      setCachingPhotoId(photo.id);
-
       try {
-        // Cache photo and wait for completion
+        // Check if photo is already cached
+        const checkResponse = await fetch(`/api/photos/${photo.id}`);
+
+        if (checkResponse.ok) {
+          // Already cached - navigate immediately without spinner
+          router.push(`/photo/${photo.id}`);
+          return;
+        }
+
+        // Not cached - show spinner and cache it
+        setCachingPhotoId(photo.id);
+
         await fetch("/api/photos/cache", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -48,7 +57,7 @@ export function PhotoGrid({ photos, viewMode = "feed" }: PhotoGridProps) {
         // Navigate after caching completes
         router.push(`/photo/${photo.id}`);
       } catch (error) {
-        console.error("Failed to cache photo:", error);
+        console.error("Failed to handle photo click:", error);
         setCachingPhotoId(null);
         // Still navigate even if cache fails
         router.push(`/photo/${photo.id}`);
