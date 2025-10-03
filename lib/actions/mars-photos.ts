@@ -85,8 +85,8 @@ export async function fetchLatestPhotos(
   const latestSol = manifest.maxSol || manifest.max_sol || 1000;
 
   // When camera filter is active, fetch many more sols since most won't have that camera
-  // When no filter, fetch fewer sols since most have photos
-  const SOLS_PER_PAGE = camera ? 15 : 2;
+  // Some cameras like CHEMCAM are used infrequently (every 20-50 sols)
+  const SOLS_PER_PAGE = camera ? 30 : 2;
   const solOffset = (page - 1) * SOLS_PER_PAGE;
 
   // Build list of sols to fetch
