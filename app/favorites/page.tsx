@@ -1,9 +1,8 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
-import Link from "next/link";
-import { PhotoGrid } from "@/components/feed/PhotoGrid";
 import type { Photo } from "mars-photo-sdk";
+import { FavoritesContent } from "@/components/favorites/FavoritesContent";
 
 export default async function FavoritesPage() {
   const session = await auth();
@@ -26,11 +25,11 @@ export default async function FavoritesPage() {
     camera: {
       id: 0,
       name: favorite.cameraName as unknown as Photo["camera"]["name"],
+      fullName: favorite.cameraName,
       rover_id: 0,
-      full_name: favorite.cameraName,
     },
-    img_src: favorite.photoUrl,
-    earth_date: favorite.photoEarthDate,
+    imgSrc: favorite.photoUrl,
+    earthDate: favorite.photoEarthDate,
     rover: {
       id: 0,
       name: favorite.roverId as unknown as Photo["rover"]["name"],
@@ -44,20 +43,7 @@ export default async function FavoritesPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-2xl mx-auto px-4 py-6">
         <h1 className="text-2xl font-bold mb-6">Your Favorites</h1>
-
-        {favorites.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500 mb-4">No favorites yet</p>
-            <Link
-              href="/"
-              className="text-blue-600 hover:text-blue-800 font-medium"
-            >
-              Browse Mars photos
-            </Link>
-          </div>
-        ) : (
-          <PhotoGrid photos={photos} />
-        )}
+        <FavoritesContent photos={photos} />
       </div>
     </div>
   );

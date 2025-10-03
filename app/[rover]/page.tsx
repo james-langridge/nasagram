@@ -11,6 +11,7 @@ import { CameraFilter } from "@/components/common/CameraFilter";
 import { DateNavigation } from "@/components/common/DateNavigation";
 import { ROVER_PROFILES, isValidRoverId } from "@/lib/constants/rovers";
 import { notFound } from "next/navigation";
+import { useViewMode } from "@/lib/providers/view-mode-provider";
 
 interface RoverPageProps {
   readonly params: Promise<{ rover: string }>;
@@ -21,6 +22,7 @@ export default function RoverPage({ params }: RoverPageProps) {
   const roverId = resolvedParams.rover;
   const [selectedCamera, setSelectedCamera] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const { viewMode } = useViewMode();
 
   // Validate rover ID
   if (!isValidRoverId(roverId)) {
@@ -87,7 +89,7 @@ export default function RoverPage({ params }: RoverPageProps) {
           </div>
         ) : (
           <>
-            <PhotoGrid photos={allPhotos} />
+            <PhotoGrid photos={allPhotos} viewMode={viewMode} />
 
             {hasNextPage && (
               <div className="max-w-2xl mx-auto px-4 mt-4">

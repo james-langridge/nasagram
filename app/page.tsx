@@ -2,8 +2,11 @@
 
 import { useInfinitePhotos } from "@/lib/hooks/useMarsPhotos";
 import { PhotoGrid } from "@/components/feed/PhotoGrid";
+import { useViewMode } from "@/lib/providers/view-mode-provider";
 
 export default function Home() {
+  const { viewMode } = useViewMode();
+
   // Home page shows mixed feed, no camera or date filter
   const {
     data,
@@ -61,7 +64,7 @@ export default function Home() {
           </div>
         ) : (
           <>
-            <PhotoGrid photos={allPhotos} />
+            <PhotoGrid photos={allPhotos} viewMode={viewMode} />
 
             {hasNextPage && (
               <div className="max-w-2xl mx-auto px-4 mt-4">

@@ -4,6 +4,7 @@ import { AuthButton } from "@/components/auth/AuthButton";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { Session } from "next-auth";
+import { ViewToggle } from "./ViewToggle";
 
 interface NavigationProps {
   session: Session | null;
@@ -17,6 +18,11 @@ export function Navigation({ session }: NavigationProps) {
     return null;
   }
 
+  // Show view toggle on pages with photo grids
+  const showViewToggle = pathname === "/" ||
+                         pathname === "/favorites" ||
+                         pathname?.match(/^\/[^/]+$/); // Rover profile pages
+
   return (
     <nav className="border-b border-gray-200 bg-white sticky top-0 z-10">
       <div className="max-w-2xl mx-auto px-4 py-3">
@@ -26,7 +32,8 @@ export function Navigation({ session }: NavigationProps) {
               MarsGram
             </h1>
           </Link>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-4">
+            {showViewToggle && <ViewToggle />}
             <AuthButton session={session} />
           </div>
         </div>
