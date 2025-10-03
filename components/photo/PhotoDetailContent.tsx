@@ -4,20 +4,25 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { ShareButton } from "@/components/common/ShareButton";
+import { FavoriteButton } from "@/components/feed/FavoriteButton";
 import { generateBlurDataUrl } from "@/lib/calculations/photo-utils";
 import type { Photo } from "mars-photo-sdk";
 import { ROVER_PROFILES } from "@/lib/constants/rovers";
 
 interface PhotoDetailContentProps {
   photo: Photo;
+  initialFavorited?: boolean;
 }
 
-export function PhotoDetailContent({ photo }: PhotoDetailContentProps) {
+export function PhotoDetailContent({
+  photo,
+  initialFavorited = false,
+}: PhotoDetailContentProps) {
   const roverProfile = ROVER_PROFILES[photo.rover.name.toLowerCase()];
 
   return (
     <div className="min-h-screen bg-black">
-      {/* Header with back button and share */}
+      {/* Header with back button and actions */}
       <div className="fixed top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/80 to-transparent">
         <div className="max-w-2xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between text-white">
@@ -28,11 +33,17 @@ export function PhotoDetailContent({ photo }: PhotoDetailContentProps) {
               <ArrowLeft className="w-5 h-5" />
               <span className="text-sm font-medium">Back</span>
             </Link>
-            <ShareButton
-              photo={photo}
-              dropdownPosition="below"
-              dropdownAlign="right"
-            />
+            <div className="flex items-center gap-4">
+              <FavoriteButton
+                photo={photo}
+                initialFavorited={initialFavorited}
+              />
+              <ShareButton
+                photo={photo}
+                dropdownPosition="below"
+                dropdownAlign="right"
+              />
+            </div>
           </div>
         </div>
       </div>

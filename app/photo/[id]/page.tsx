@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getCachedPhoto, cachedPhotoToPhoto } from "@/lib/actions/photo-cache";
 import { PhotoDetailContent } from "@/components/photo/PhotoDetailContent";
 import { notFound } from "next/navigation";
+import { isPhotoFavorited } from "@/lib/actions/favorites";
 
 interface PhotoDetailPageProps {
   readonly params: Promise<{ id: string }>;
@@ -46,5 +47,8 @@ export default async function PhotoDetailPage({
   // Transform cached data to Photo type for components
   const photo = cachedPhotoToPhoto(cached);
 
-  return <PhotoDetailContent photo={photo} />;
+  // Check if photo is favorited by current user
+  const favorited = await isPhotoFavorited(photoId);
+
+  return <PhotoDetailContent photo={photo} initialFavorited={favorited} />;
 }
