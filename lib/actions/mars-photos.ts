@@ -80,21 +80,44 @@ export async function fetchLatestPhotos(
     });
   }
 
-  // Get manifest to determine latest sol
+  // Get manifest to determine which sols to fetch
   const manifest = await client.manifests.get(rover);
   const latestSol = manifest.maxSol || manifest.max_sol || 1000;
 
-  // When camera filter is active, fetch many more sols since most won't have that camera
-  // Some cameras like CHEMCAM are used infrequently (every 20-50 sols)
-  const SOLS_PER_PAGE = camera ? 30 : 2;
-  const solOffset = (page - 1) * SOLS_PER_PAGE;
+  let solsToFetch: number[];
 
-  // Build list of sols to fetch
-  const solsToFetch: number[] = [];
-  for (let i = 0; i < SOLS_PER_PAGE; i++) {
-    const targetSol = latestSol - solOffset - i;
-    if (targetSol < 1) break;
-    solsToFetch.push(targetSol);
+  // When camera filter is active, use manifest to find sols with that camera
+  if (camera) {
+    // Find all sols that have photos from this camera, sorted newest first
+    const solsWithCamera = manifest.photos
+      .filter((p) => {
+        // Handle both snake_case and camelCase, case-insensitive comparison
+        const cameraList = p.cameras || [];
+        return cameraList.some((c) => c.toUpperCase() === camera.toUpperCase());
+      })
+      .map((p) => p.sol)
+      .sort((a, b) => b - a); // newest first
+
+    // Paginate through the filtered sols (2 per page)
+    const SOLS_PER_PAGE = 2;
+    const startIndex = (page - 1) * SOLS_PER_PAGE;
+    solsToFetch = solsWithCamera.slice(startIndex, startIndex + SOLS_PER_PAGE);
+
+    // No more sols with this camera
+    if (solsToFetch.length === 0) {
+      return { photos: [], nextPage: null };
+    }
+  } else {
+    // No camera filter - just fetch recent sols
+    const SOLS_PER_PAGE = 2;
+    const solOffset = (page - 1) * SOLS_PER_PAGE;
+
+    solsToFetch = [];
+    for (let i = 0; i < SOLS_PER_PAGE; i++) {
+      const targetSol = latestSol - solOffset - i;
+      if (targetSol < 1) break;
+      solsToFetch.push(targetSol);
+    }
   }
 
   if (solsToFetch.length === 0) {
