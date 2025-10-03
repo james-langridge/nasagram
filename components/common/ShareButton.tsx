@@ -101,10 +101,10 @@ export function ShareButton({
               {isNativeShareSupported() && (
                 <button
                   onClick={handleNativeShare}
-                  className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center"
+                  className="w-full px-4 py-2 text-left text-sm text-gray-900 hover:bg-gray-100 flex items-center"
                 >
                   <svg
-                    className="w-4 h-4 mr-2"
+                    className="w-4 h-4 mr-2 text-gray-700"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -123,10 +123,10 @@ export function ShareButton({
               {/* Copy link */}
               <button
                 onClick={handleCopyLink}
-                className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center"
+                className="w-full px-4 py-2 text-left text-sm text-gray-900 hover:bg-gray-100 flex items-center"
               >
                 <svg
-                  className="w-4 h-4 mr-2"
+                  className="w-4 h-4 mr-2 text-gray-700"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -149,10 +149,10 @@ export function ShareButton({
                 onClick={() =>
                   handlePlatformShare(getTwitterShareUrl(shareText, shareUrl))
                 }
-                className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center"
+                className="w-full px-4 py-2 text-left text-sm text-gray-900 hover:bg-gray-100 flex items-center"
               >
                 <svg
-                  className="w-4 h-4 mr-2"
+                  className="w-4 h-4 mr-2 text-gray-700"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -166,10 +166,10 @@ export function ShareButton({
                 onClick={() =>
                   handlePlatformShare(getFacebookShareUrl(shareUrl))
                 }
-                className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center"
+                className="w-full px-4 py-2 text-left text-sm text-gray-900 hover:bg-gray-100 flex items-center"
               >
                 <svg
-                  className="w-4 h-4 mr-2"
+                  className="w-4 h-4 mr-2 text-gray-700"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -183,10 +183,10 @@ export function ShareButton({
                 onClick={() =>
                   handlePlatformShare(getRedditShareUrl(shareText, shareUrl))
                 }
-                className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center"
+                className="w-full px-4 py-2 text-left text-sm text-gray-900 hover:bg-gray-100 flex items-center"
               >
                 <svg
-                  className="w-4 h-4 mr-2"
+                  className="w-4 h-4 mr-2 text-gray-700"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -205,10 +205,10 @@ export function ShareButton({
                     ),
                   )
                 }
-                className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center"
+                className="w-full px-4 py-2 text-left text-sm text-gray-900 hover:bg-gray-100 flex items-center"
               >
                 <svg
-                  className="w-4 h-4 mr-2"
+                  className="w-4 h-4 mr-2 text-gray-700"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
