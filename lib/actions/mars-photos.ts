@@ -95,7 +95,11 @@ export async function fetchLatestPhotos(
         // but we filter by prefix (e.g., CHEMCAM, FHAZ)
         const cameraList = p.cameras || [];
         const cameraUpper = camera.toUpperCase();
-        return cameraList.some((c) => c.toUpperCase().startsWith(cameraUpper));
+
+        // Special case: NAVCAM -> NAV (manifest uses NAV_LEFT_B, NAV_RIGHT_B)
+        const searchPrefix = cameraUpper === "NAVCAM" ? "NAV" : cameraUpper;
+
+        return cameraList.some((c) => c.toUpperCase().startsWith(searchPrefix));
       })
       .map((p) => p.sol)
       .sort((a, b) => b - a); // newest first
@@ -151,9 +155,12 @@ export async function fetchLatestPhotos(
   // Photos API uses specific names (CHEMCAM_RMI) but we filter by prefix (CHEMCAM)
   if (camera) {
     const cameraUpper = camera.toUpperCase();
+    // Special case: NAVCAM -> NAV (manifest uses NAV_LEFT_B, NAV_RIGHT_B)
+    const searchPrefix = cameraUpper === "NAVCAM" ? "NAV" : cameraUpper;
+
     allPhotos = allPhotos.filter((photo) => {
       const photoCamera = photo.camera.name.toUpperCase();
-      return photoCamera.startsWith(cameraUpper);
+      return photoCamera.startsWith(searchPrefix);
     });
   }
 
