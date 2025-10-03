@@ -61,6 +61,7 @@ export async function fetchMarsPhotos(
 }
 
 // Fetch latest photos from a rover
+// Goes backwards in time with each page for infinite scroll when no date filter
 export async function fetchLatestPhotos(
   rover: string,
   page: number = 1,
@@ -69,23 +70,65 @@ export async function fetchLatestPhotos(
 ): Promise<PhotosResponse> {
   const client = getClient();
 
-  // Determine which date to use
-  let targetDate: string;
+  // If user selected a specific date, just paginate through that date
   if (date) {
-    // Use provided date (could be Earth date YYYY-MM-DD or sol number)
-    targetDate = date;
-  } else {
-    // Get latest manifest to find most recent sol
-    const manifest = await client.manifests.get(rover);
-    targetDate = (manifest.maxSol || manifest.max_sol || 1000).toString();
+    return fetchMarsPhotos({
+      rover,
+      date,
+      page,
+      camera: camera || undefined,
+    });
   }
 
-  return fetchMarsPhotos({
-    rover,
-    date: targetDate,
-    page,
-    camera: camera || undefined,
+  // No date filter - go backwards in time with each page
+  const manifest = await client.manifests.get(rover);
+  const latestSol = manifest.maxSol || manifest.max_sol || 1000;
+
+  const SOLS_PER_PAGE = 2;
+  const solOffset = (page - 1) * SOLS_PER_PAGE;
+
+  // Fetch photos from multiple sols for this page
+  const promises = [];
+  for (let i = 0; i < SOLS_PER_PAGE; i++) {
+    const targetSol = latestSol - solOffset - i;
+
+    // Stop if we've gone before sol 1
+    if (targetSol < 1) break;
+
+    promises.push(
+      fetchMarsPhotos({
+        rover,
+        date: targetSol.toString(),
+        page: 1,
+        camera: camera || undefined,
+      }).catch((error) => {
+        // If a specific sol fails, log and return empty
+        console.error(`Failed to fetch ${rover} sol ${targetSol}:`, error);
+        return { photos: [], nextPage: null };
+      }),
+    );
+  }
+
+  // Wait for all fetches to complete
+  const results = await Promise.all(promises);
+
+  // Combine all photos from all sols
+  const allPhotos = results.flatMap((r) => r.photos);
+
+  // Sort by earth date descending (newest first)
+  const sortedPhotos = [...allPhotos].sort((a, b) => {
+    const dateA = a.earth_date || a.earthDate || "1970-01-01";
+    const dateB = b.earth_date || b.earthDate || "1970-01-01";
+    return new Date(dateB).getTime() - new Date(dateA).getTime();
   });
+
+  // Continue pagination if we got photos
+  const hasNextPage = sortedPhotos.length > 0;
+
+  return {
+    photos: sortedPhotos,
+    nextPage: hasNextPage ? page + 1 : null,
+  };
 }
 
 // Fetch photos from all active rovers (for mixed feed)
