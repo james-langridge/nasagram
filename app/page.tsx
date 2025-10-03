@@ -12,17 +12,32 @@ export default function Home() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isError,
+    failureReason,
   } = useInfinitePhotos(null, null, null);
 
   // Flatten all pages into single array
   const allPhotos = data?.pages.flatMap((page) => page.photos) || [];
 
-  if (error) {
+  // Debug info for production
+  console.log('[Home] Query state:', {
+    isPending,
+    isError,
+    hasData: !!data,
+    photoCount: allPhotos.length,
+    error: error?.message || error,
+    failureReason,
+  });
+
+  if (error || isError) {
     return (
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-2xl mx-auto p-4">
           <div className="bg-red-50 text-red-600 p-4 rounded-lg">
-            Error loading photos. Please try again.
+            <p className="font-semibold">Error loading photos</p>
+            <p className="text-sm mt-2">
+              {error instanceof Error ? error.message : 'Please try again later'}
+            </p>
           </div>
         </div>
       </div>
@@ -36,6 +51,12 @@ export default function Home() {
           <div className="max-w-2xl mx-auto p-4">
             <div className="flex items-center justify-center py-12">
               <div className="text-gray-500">Loading photos...</div>
+            </div>
+          </div>
+        ) : allPhotos.length === 0 ? (
+          <div className="max-w-2xl mx-auto p-4">
+            <div className="text-center py-12 text-gray-500">
+              No photos available. Please try refreshing the page.
             </div>
           </div>
         ) : (

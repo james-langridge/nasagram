@@ -23,13 +23,26 @@ async function fetchPhotosFromAPI(
   if (date) params.append("date", date);
   params.append("page", page.toString());
 
-  const response = await fetch(`/api/photos?${params.toString()}`);
+  const url = `/api/photos?${params.toString()}`;
+  console.log('[fetchPhotosFromAPI] Fetching:', url);
+
+  const response = await fetch(url);
+
+  console.log('[fetchPhotosFromAPI] Response:', {
+    status: response.status,
+    ok: response.ok,
+    headers: Object.fromEntries(response.headers.entries())
+  });
 
   if (!response.ok) {
-    throw new Error("Failed to fetch photos");
+    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+    console.error('[fetchPhotosFromAPI] Error response:', errorData);
+    throw new Error(errorData.error || `Failed to fetch photos: ${response.status}`);
   }
 
-  return response.json();
+  const data = await response.json();
+  console.log('[fetchPhotosFromAPI] Data:', { photoCount: data.photos?.length, hasNextPage: !!data.nextPage });
+  return data;
 }
 
 export function useInfinitePhotos(
@@ -39,9 +52,16 @@ export function useInfinitePhotos(
 ) {
   return useInfiniteQuery({
     queryKey: ["photos", rover, camera, date],
-    queryFn: ({ pageParam = 1 }) =>
-      fetchPhotosFromAPI(rover, pageParam, camera, date),
+    queryFn: async ({ pageParam = 1 }) => {
+      console.log('[useInfinitePhotos] Fetching:', { rover, camera, date, page: pageParam });
+      const result = await fetchPhotosFromAPI(rover, pageParam, camera, date);
+      console.log('[useInfinitePhotos] Result:', { photoCount: result.photos.length, nextPage: result.nextPage });
+      return result;
+    },
     getNextPageParam: (lastPage) => lastPage.nextPage,
     initialPageParam: 1,
+    retry: 3,
+    staleTime: 0,
+    refetchOnMount: true,
   });
 }

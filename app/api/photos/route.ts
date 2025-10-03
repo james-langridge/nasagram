@@ -9,6 +9,8 @@ export async function GET(request: NextRequest) {
     const date = searchParams.get("date");
     const page = parseInt(searchParams.get("page") || "1");
 
+    console.log('[API /api/photos] Request:', { rover, camera, date, page });
+
     // Fetch photos based on rover, camera, and date parameters
     let result;
     if (rover) {
@@ -18,11 +20,16 @@ export async function GET(request: NextRequest) {
       result = await fetchMixedFeed(page);
     }
 
+    console.log('[API /api/photos] Success:', { photoCount: result.photos.length, hasNextPage: !!result.nextPage });
     return NextResponse.json(result);
   } catch (error) {
-    console.error("Error fetching photos:", error);
+    console.error("[API /api/photos] Error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Failed to fetch photos";
     return NextResponse.json(
-      { error: "Failed to fetch photos" },
+      {
+        error: errorMessage,
+        details: error instanceof Error ? error.stack : String(error)
+      },
       { status: 500 },
     );
   }
