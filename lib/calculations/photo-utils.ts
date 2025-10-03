@@ -95,3 +95,10 @@ export function generateBlurDataUrl(): string {
   // Simple base64 encoded 1x1 gray pixel
   return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==";
 }
+
+// Normalize image URL to HTTPS
+// Older rovers (Spirit, Opportunity) return HTTP URLs which Next.js Image doesn't handle
+export function normalizeImageUrl(url: string | undefined): string {
+  if (!url) return "";
+  return url.replace(/^http:\/\//i, "https://");
+}

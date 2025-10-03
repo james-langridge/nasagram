@@ -5,7 +5,10 @@ import Link from "next/link";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { ShareButton } from "@/components/common/ShareButton";
 import { FavoriteButton } from "@/components/feed/FavoriteButton";
-import { generateBlurDataUrl } from "@/lib/calculations/photo-utils";
+import {
+  generateBlurDataUrl,
+  normalizeImageUrl,
+} from "@/lib/calculations/photo-utils";
 import type { Photo } from "mars-photo-sdk";
 import { ROVER_PROFILES } from "@/lib/constants/rovers";
 
@@ -52,7 +55,7 @@ export function PhotoDetailContent({
       <div className="relative w-full min-h-screen flex items-center justify-center">
         <div className="relative w-full max-w-4xl aspect-square">
           <Image
-            src={photo.imgSrc || photo.img_src || ""}
+            src={normalizeImageUrl(photo.imgSrc || photo.img_src)}
             alt={`Mars photo from ${photo.rover.name} on sol ${photo.sol}`}
             fill
             sizes="100vw"

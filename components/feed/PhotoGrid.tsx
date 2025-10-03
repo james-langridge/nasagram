@@ -5,6 +5,7 @@ import { PhotoCard } from "./PhotoCard";
 import {
   getPhotoKey,
   generateBlurDataUrl,
+  normalizeImageUrl,
 } from "@/lib/calculations/photo-utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -79,7 +80,7 @@ export function PhotoGrid({ photos, viewMode = "feed" }: PhotoGridProps) {
                 className="relative aspect-square bg-gray-100 hover:opacity-90 transition-opacity"
               >
                 <Image
-                  src={photo.imgSrc || photo.img_src || ""}
+                  src={normalizeImageUrl(photo.imgSrc || photo.img_src)}
                   alt={`Mars photo from ${photo.rover.name} on sol ${photo.sol}`}
                   fill
                   sizes="(max-width: 768px) 33vw, 25vw"

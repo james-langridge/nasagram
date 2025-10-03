@@ -3,6 +3,7 @@
 
 import prisma from "@/lib/prisma";
 import type { Photo } from "mars-photo-sdk";
+import { normalizeImageUrl } from "@/lib/calculations/photo-utils";
 
 export interface CachedPhoto {
   readonly photoId: number;
@@ -19,11 +20,13 @@ export interface CachedPhoto {
  * Uses upsert to update if already exists
  */
 export async function cachePhoto(photo: Photo): Promise<void> {
+  const photoUrl = normalizeImageUrl(photo.imgSrc || photo.img_src);
+
   await prisma.photoCache.upsert({
     where: { photoId: photo.id },
     update: {
       roverId: photo.rover.name,
-      photoUrl: photo.imgSrc || photo.img_src || "",
+      photoUrl,
       photoSol: photo.sol,
       photoEarthDate: photo.earthDate || photo.earth_date || "",
       cameraName: photo.camera.name,
@@ -33,7 +36,7 @@ export async function cachePhoto(photo: Photo): Promise<void> {
     create: {
       photoId: photo.id,
       roverId: photo.rover.name,
-      photoUrl: photo.imgSrc || photo.img_src || "",
+      photoUrl,
       photoSol: photo.sol,
       photoEarthDate: photo.earthDate || photo.earth_date || "",
       cameraName: photo.camera.name,

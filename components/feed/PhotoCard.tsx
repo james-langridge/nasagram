@@ -10,6 +10,7 @@ import {
   formatEarthDate,
   generatePhotoCaption,
   generateBlurDataUrl,
+  normalizeImageUrl,
 } from "@/lib/calculations/photo-utils";
 import { ROVER_PROFILES } from "@/lib/constants/rovers";
 import { FavoriteButton } from "./FavoriteButton";
@@ -107,7 +108,7 @@ export function PhotoCard({ photo }: PhotoCardProps) {
         <div className="relative aspect-square bg-gray-100">
           {photo.imgSrc && (
             <Image
-              src={photo.imgSrc}
+              src={normalizeImageUrl(photo.imgSrc)}
               alt={generatePhotoCaption(photo)}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

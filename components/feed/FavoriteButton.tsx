@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Heart } from "lucide-react";
 import type { Photo } from "mars-photo-sdk";
+import { normalizeImageUrl } from "@/lib/calculations/photo-utils";
 
 interface FavoriteButtonProps {
   readonly photo: Photo;
@@ -25,7 +26,7 @@ export function FavoriteButton({
         body: JSON.stringify({
           photoId: photo.id,
           roverId: photo.rover.name.toLowerCase(),
-          photoUrl: photo.imgSrc,
+          photoUrl: normalizeImageUrl(photo.imgSrc),
           photoSol: photo.sol,
           photoEarthDate: photo.earthDate || "",
           cameraName: photo.camera.name,
