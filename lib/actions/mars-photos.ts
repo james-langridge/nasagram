@@ -80,35 +80,53 @@ export async function fetchLatestPhotos(
     });
   }
 
-  // No date filter - go backwards in time with each page
+  // Get manifest to find sols with photos
   const manifest = await client.manifests.get(rover);
-  const latestSol = manifest.maxSol || manifest.max_sol || 1000;
 
-  // Fetch more sols when camera filter is active (many sols have no photos from specific camera)
-  const SOLS_PER_PAGE = camera ? 5 : 2;
-  const solOffset = (page - 1) * SOLS_PER_PAGE;
+  // If camera filter is active, find sols that have photos from that camera
+  let solsToFetch: number[];
+  if (camera) {
+    // Filter manifest photos to only those with the selected camera
+    const solsWithCamera = manifest.photos
+      .filter((p) => p.cameras.some((c) => c === camera))
+      .map((p) => p.sol)
+      .sort((a, b) => b - a); // Sort descending (newest first)
 
-  // Fetch photos from multiple sols for this page
-  const promises = [];
-  for (let i = 0; i < SOLS_PER_PAGE; i++) {
-    const targetSol = latestSol - solOffset - i;
+    // Get 2 sols per page from the filtered list
+    const SOLS_PER_PAGE = 2;
+    const startIndex = (page - 1) * SOLS_PER_PAGE;
+    solsToFetch = solsWithCamera.slice(startIndex, startIndex + SOLS_PER_PAGE);
 
-    // Stop if we've gone before sol 1
-    if (targetSol < 1) break;
+    // No more sols with this camera
+    if (solsToFetch.length === 0) {
+      return { photos: [], nextPage: null };
+    }
+  } else {
+    // No camera filter - just get latest sols
+    const latestSol = manifest.maxSol || manifest.max_sol || 1000;
+    const SOLS_PER_PAGE = 2;
+    const solOffset = (page - 1) * SOLS_PER_PAGE;
 
-    promises.push(
-      fetchMarsPhotos({
-        rover,
-        date: targetSol.toString(),
-        page: 1,
-        camera: camera || undefined,
-      }).catch((error) => {
-        // If a specific sol fails, log and return empty
-        console.error(`Failed to fetch ${rover} sol ${targetSol}:`, error);
-        return { photos: [], nextPage: null };
-      }),
-    );
+    solsToFetch = [];
+    for (let i = 0; i < SOLS_PER_PAGE; i++) {
+      const targetSol = latestSol - solOffset - i;
+      if (targetSol < 1) break;
+      solsToFetch.push(targetSol);
+    }
   }
+
+  // Fetch photos from the selected sols
+  const promises = solsToFetch.map((sol) =>
+    fetchMarsPhotos({
+      rover,
+      date: sol.toString(),
+      page: 1,
+      camera: camera || undefined,
+    }).catch((error) => {
+      console.error(`Failed to fetch ${rover} sol ${sol}:`, error);
+      return { photos: [], nextPage: null };
+    }),
+  );
 
   // Wait for all fetches to complete
   const results = await Promise.all(promises);
