@@ -20,9 +20,14 @@ import {
 interface ShareButtonProps {
   readonly photo: Photo;
   readonly className?: string;
+  readonly dropdownPosition?: "above" | "below";
 }
 
-export function ShareButton({ photo, className = "" }: ShareButtonProps) {
+export function ShareButton({
+  photo,
+  className = "",
+  dropdownPosition = "above",
+}: ShareButtonProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
 
@@ -86,7 +91,9 @@ export function ShareButton({ photo, className = "" }: ShareButtonProps) {
           />
 
           {/* Menu */}
-          <div className="absolute bottom-full mb-2 left-0 z-20 bg-white border border-gray-200 rounded-lg shadow-lg min-w-[200px]">
+          <div
+            className={`absolute ${dropdownPosition === "above" ? "bottom-full mb-2" : "top-full mt-2"} left-0 z-20 bg-white border border-gray-200 rounded-lg shadow-lg min-w-[200px]`}
+          >
             <div className="py-1">
               {/* Native share (mobile) */}
               {isNativeShareSupported() && (

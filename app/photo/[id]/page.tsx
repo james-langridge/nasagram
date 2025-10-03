@@ -99,7 +99,11 @@ export default function PhotoDetailPage({ params }: PhotoDetailPageProps) {
 
           <div className="flex items-center gap-4">
             <div className="text-white">
-              <ShareButton photo={photo} className="text-white" />
+              <ShareButton
+                photo={photo}
+                className="text-white"
+                dropdownPosition="below"
+              />
             </div>
           </div>
         </div>
