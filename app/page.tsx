@@ -7,7 +7,7 @@ export default function Home() {
   // Home page shows mixed feed, no camera or date filter
   const {
     data,
-    isLoading,
+    isPending,
     error,
     fetchNextPage,
     hasNextPage,
@@ -32,7 +32,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="pb-8">
-        {isLoading ? (
+        {isPending ? (
           <div className="max-w-2xl mx-auto p-4">
             <div className="flex items-center justify-center py-12">
               <div className="text-gray-500">Loading photos...</div>

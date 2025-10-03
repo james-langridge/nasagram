@@ -31,7 +31,7 @@ export default function RoverPage({ params }: RoverPageProps) {
 
   const {
     data,
-    isLoading,
+    isPending,
     error,
     fetchNextPage,
     hasNextPage,
@@ -73,7 +73,7 @@ export default function RoverPage({ params }: RoverPageProps) {
       </div>
 
       <main className="pb-8">
-        {isLoading ? (
+        {isPending ? (
           <div className="max-w-2xl mx-auto p-4">
             <div className="flex items-center justify-center py-12">
               <div className="text-gray-500">Loading photos...</div>
