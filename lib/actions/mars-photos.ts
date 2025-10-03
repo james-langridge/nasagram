@@ -80,39 +80,25 @@ export async function fetchLatestPhotos(
     });
   }
 
-  // Get manifest to find sols with photos
+  // Get manifest to determine latest sol
   const manifest = await client.manifests.get(rover);
+  const latestSol = manifest.maxSol || manifest.max_sol || 1000;
 
-  // If camera filter is active, find sols that have photos from that camera
-  let solsToFetch: number[];
-  if (camera) {
-    // Filter manifest photos to only those with the selected camera
-    const solsWithCamera = manifest.photos
-      .filter((p) => p.cameras.some((c) => c === camera))
-      .map((p) => p.sol)
-      .sort((a, b) => b - a); // Sort descending (newest first)
+  // When camera filter is active, fetch many more sols since most won't have that camera
+  // When no filter, fetch fewer sols since most have photos
+  const SOLS_PER_PAGE = camera ? 15 : 2;
+  const solOffset = (page - 1) * SOLS_PER_PAGE;
 
-    // Get 2 sols per page from the filtered list
-    const SOLS_PER_PAGE = 2;
-    const startIndex = (page - 1) * SOLS_PER_PAGE;
-    solsToFetch = solsWithCamera.slice(startIndex, startIndex + SOLS_PER_PAGE);
+  // Build list of sols to fetch
+  const solsToFetch: number[] = [];
+  for (let i = 0; i < SOLS_PER_PAGE; i++) {
+    const targetSol = latestSol - solOffset - i;
+    if (targetSol < 1) break;
+    solsToFetch.push(targetSol);
+  }
 
-    // No more sols with this camera
-    if (solsToFetch.length === 0) {
-      return { photos: [], nextPage: null };
-    }
-  } else {
-    // No camera filter - just get latest sols
-    const latestSol = manifest.maxSol || manifest.max_sol || 1000;
-    const SOLS_PER_PAGE = 2;
-    const solOffset = (page - 1) * SOLS_PER_PAGE;
-
-    solsToFetch = [];
-    for (let i = 0; i < SOLS_PER_PAGE; i++) {
-      const targetSol = latestSol - solOffset - i;
-      if (targetSol < 1) break;
-      solsToFetch.push(targetSol);
-    }
+  if (solsToFetch.length === 0) {
+    return { photos: [], nextPage: null };
   }
 
   // Fetch photos from the selected sols
