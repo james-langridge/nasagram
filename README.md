@@ -119,6 +119,12 @@ The NASA API has inconsistent camera naming between endpoints:
 - `NAVCAM` AND `NAV_LEFT_B`, `NAV_RIGHT_B`
 - `MAST` AND `MAST_LEFT`, `MAST_RIGHT`
 
+**Camera naming changed over time** (Curiosity example):
+
+- Before Feb 2024: Used generic `NAVCAM`
+- After Feb 2024: Uses specific `NAV_LEFT_B`, `NAV_RIGHT_B`
+- Filtering by "NAVCAM" requires checking prefix "NAV" to match both
+
 **Photos API** only accepts specific camera names:
 
 - `camera=CHEMCAM` returns 0 photos
@@ -127,10 +133,11 @@ The NASA API has inconsistent camera naming between endpoints:
 **Solution implemented:**
 
 1. Filter manifest by camera prefix (CHEMCAM matches CHEMCAM_RMI)
-2. Fetch all photos from matching sols (no camera param)
-3. Filter photos client-side by camera prefix
+2. Map NAVCAM -> NAV prefix (handles naming change over time)
+3. Fetch all photos from matching sols (no camera param to API)
+4. Filter photos client-side by camera prefix
 
-This handles all camera variants correctly without API quirks.
+This handles all camera variants and historical naming changes.
 
 ### Pagination Behavior
 
