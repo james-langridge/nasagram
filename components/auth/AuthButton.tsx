@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { Heart } from "lucide-react";
 import { signIn, signOut } from "@/lib/auth-actions";
 import Image from "next/image";
+import Link from "next/link";
 
 export async function AuthButton() {
   const session = await auth();
@@ -9,9 +10,9 @@ export async function AuthButton() {
   if (session?.user) {
     return (
       <div className="flex items-center gap-4">
-        <a href="/favorites" className="text-gray-700 hover:text-gray-900">
+        <Link href="/favorites" className="text-gray-700 hover:text-gray-900">
           <Heart className="w-6 h-6" />
-        </a>
+        </Link>
         {session.user.image && (
           <Image
             src={session.user.image}
