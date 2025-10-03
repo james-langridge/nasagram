@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import type { Photo } from "mars-photo-sdk";
 import {
   formatSol,
@@ -18,18 +20,34 @@ interface PhotoCardProps {
 }
 
 export function PhotoCard({ photo }: PhotoCardProps) {
+  const router = useRouter();
+  const [isNavigating, setIsNavigating] = useState(false);
   const roverProfile = ROVER_PROFILES[photo.rover.name.toLowerCase()];
 
-  // Cache photo when clicked for deep linking support
-  const handlePhotoClick = async () => {
-    // Let the link navigate normally, but cache in background
-    fetch("/api/photos/cache", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(photo),
-    }).catch((error) => {
+  // Cache photo before navigation to ensure it's available
+  const handlePhotoClick = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent immediate navigation
+
+    if (isNavigating) return; // Prevent double-clicks
+
+    setIsNavigating(true);
+
+    try {
+      // Cache photo and wait for completion
+      await fetch("/api/photos/cache", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(photo),
+      });
+
+      // Navigate after caching completes
+      router.push(`/photo/${photo.id}`);
+    } catch (error) {
       console.error("Failed to cache photo:", error);
-    });
+      setIsNavigating(false);
+      // Still navigate even if cache fails
+      router.push(`/photo/${photo.id}`);
+    }
   };
 
   // Clean photo detail URL
@@ -89,6 +107,12 @@ export function PhotoCard({ photo }: PhotoCardProps) {
               placeholder="blur"
               blurDataURL={generateBlurDataUrl()}
             />
+          )}
+          {/* Loading overlay */}
+          {isNavigating && (
+            <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
+              <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+            </div>
           )}
         </div>
       </Link>
