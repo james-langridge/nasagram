@@ -209,9 +209,22 @@ export default function PhotoDetailPage({ params }: PhotoDetailPageProps) {
                   href={photoData.imgSrc}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block w-full mt-6 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-center rounded-lg transition-colors"
+                  className="flex items-center justify-center gap-2 w-full mt-6 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                 >
                   View Full Resolution
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                    />
+                  </svg>
                 </a>
               </div>
             </div>
