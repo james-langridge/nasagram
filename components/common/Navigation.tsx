@@ -23,7 +23,7 @@ export function Navigation({ session }: NavigationProps) {
         <div className="flex items-center justify-between">
           <Link href="/">
             <h1 className="text-2xl font-bold cursor-pointer hover:text-gray-700">
-              MarsGram
+              Nasagram
             </h1>
           </Link>
           <AuthButton session={session} />
