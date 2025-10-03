@@ -88,6 +88,16 @@ export async function fetchLatestPhotos(
 
   // When camera filter is active, use manifest to find sols with that camera
   if (camera) {
+    console.log(
+      `[fetchLatestPhotos] Manifest has ${manifest.photos.length} sols total`,
+    );
+    console.log(
+      `[fetchLatestPhotos] Latest 5 sols in manifest:`,
+      manifest.photos
+        .slice(-5)
+        .map((p) => ({ sol: p.sol, cameras: p.cameras })),
+    );
+
     // Find all sols that have photos from this camera, sorted newest first
     const solsWithCamera = manifest.photos
       .filter((p) => {
@@ -98,10 +108,23 @@ export async function fetchLatestPhotos(
       .map((p) => p.sol)
       .sort((a, b) => b - a); // newest first
 
+    console.log(
+      `[fetchLatestPhotos] Camera ${camera}: found ${solsWithCamera.length} sols`,
+    );
+    console.log(
+      `[fetchLatestPhotos] First 10 sols with ${camera}:`,
+      solsWithCamera.slice(0, 10),
+    );
+
     // Paginate through the filtered sols (2 per page)
     const SOLS_PER_PAGE = 2;
     const startIndex = (page - 1) * SOLS_PER_PAGE;
     solsToFetch = solsWithCamera.slice(startIndex, startIndex + SOLS_PER_PAGE);
+
+    console.log(
+      `[fetchLatestPhotos] Fetching sols for page ${page}:`,
+      solsToFetch,
+    );
 
     // No more sols with this camera
     if (solsToFetch.length === 0) {
