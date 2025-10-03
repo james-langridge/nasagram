@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { Photo } from "mars-photo-sdk";
 import {
   formatSol,
@@ -8,6 +9,7 @@ import {
 } from "@/lib/calculations/photo-utils";
 import { ROVER_PROFILES } from "@/lib/constants/rovers";
 import { FavoriteButton } from "./FavoriteButton";
+import { ShareButton } from "@/components/common/ShareButton";
 
 interface PhotoCardProps {
   readonly photo: Photo;
@@ -16,20 +18,36 @@ interface PhotoCardProps {
 export function PhotoCard({ photo }: PhotoCardProps) {
   const roverProfile = ROVER_PROFILES[photo.rover.name.toLowerCase()];
 
+  // Build photo detail URL with metadata
+  const photoDetailUrl = `/photo/${photo.id}?${new URLSearchParams({
+    img: photo.imgSrc || "",
+    rover: photo.rover.name,
+    camera: photo.camera.name,
+    cameraFull: photo.camera.fullName || photo.camera.name,
+    sol: photo.sol.toString(),
+    earthDate: photo.earthDate || "",
+  }).toString()}`;
+
   return (
     <article className="bg-white border border-gray-200 mb-4">
       {/* Header with rover info */}
       <div className="flex items-center p-3">
-        <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+        <Link
+          href={`/${photo.rover.name.toLowerCase()}`}
+          className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-3 hover:bg-gray-300"
+        >
           <span className="text-xs font-semibold">
             {photo.rover.name.charAt(0)}
           </span>
-        </div>
+        </Link>
         <div className="flex-1">
           <div className="flex items-center">
-            <span className="font-semibold text-sm">
+            <Link
+              href={`/${photo.rover.name.toLowerCase()}`}
+              className="font-semibold text-sm hover:text-gray-600"
+            >
               {roverProfile?.displayName || photo.rover.name}
-            </span>
+            </Link>
             {roverProfile?.verified && (
               <svg
                 className="w-4 h-4 ml-1 text-blue-500"
@@ -50,21 +68,23 @@ export function PhotoCard({ photo }: PhotoCardProps) {
         </div>
       </div>
 
-      {/* Photo */}
-      <div className="relative aspect-square bg-gray-100">
-        {photo.imgSrc && (
-          <Image
-            src={photo.imgSrc}
-            alt={generatePhotoCaption(photo)}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover"
-            loading="lazy"
-            placeholder="blur"
-            blurDataURL={generateBlurDataUrl()}
-          />
-        )}
-      </div>
+      {/* Photo - clickable to detail page */}
+      <Link href={photoDetailUrl} className="block">
+        <div className="relative aspect-square bg-gray-100">
+          {photo.imgSrc && (
+            <Image
+              src={photo.imgSrc}
+              alt={generatePhotoCaption(photo)}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover hover:opacity-95 transition-opacity"
+              loading="lazy"
+              placeholder="blur"
+              blurDataURL={generateBlurDataUrl()}
+            />
+          )}
+        </div>
+      </Link>
 
       {/* Action buttons */}
       <div className="p-3">
@@ -72,21 +92,9 @@ export function PhotoCard({ photo }: PhotoCardProps) {
           <div className="mr-4">
             <FavoriteButton photo={photo} />
           </div>
-          <button className="mr-4 hover:text-gray-500" aria-label="Share">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
-              />
-            </svg>
-          </button>
+          <div className="mr-4">
+            <ShareButton photo={photo} />
+          </div>
         </div>
 
         {/* Caption */}
