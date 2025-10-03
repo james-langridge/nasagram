@@ -101,9 +101,11 @@ export async function fetchLatestPhotos(
     // Find all sols that have photos from this camera, sorted newest first
     const solsWithCamera = manifest.photos
       .filter((p) => {
-        // Handle both snake_case and camelCase, case-insensitive comparison
+        // Manifest uses full camera names (e.g., CHEMCAM_RMI, FHAZ_LEFT_B)
+        // but we filter by prefix (e.g., CHEMCAM, FHAZ)
         const cameraList = p.cameras || [];
-        return cameraList.some((c) => c.toUpperCase() === camera.toUpperCase());
+        const cameraUpper = camera.toUpperCase();
+        return cameraList.some((c) => c.toUpperCase().startsWith(cameraUpper));
       })
       .map((p) => p.sol)
       .sort((a, b) => b - a); // newest first
