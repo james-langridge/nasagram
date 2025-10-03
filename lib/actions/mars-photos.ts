@@ -10,12 +10,16 @@ function getClient() {
     process.env.NASA_API_KEY || process.env.NEXT_PUBLIC_NASA_API_KEY;
 
   if (!apiKey) {
-    console.error('[getClient] NASA_API_KEY is missing!', {
+    console.error("[getClient] NASA_API_KEY is missing!", {
       NASA_API_KEY: !!process.env.NASA_API_KEY,
       NEXT_PUBLIC_NASA_API_KEY: !!process.env.NEXT_PUBLIC_NASA_API_KEY,
-      env: Object.keys(process.env).filter(k => k.includes('NASA') || k.includes('API'))
+      env: Object.keys(process.env).filter(
+        (k) => k.includes("NASA") || k.includes("API"),
+      ),
     });
-    throw new Error("NASA_API_KEY environment variable is not set. Please configure it in your deployment settings.");
+    throw new Error(
+      "NASA_API_KEY environment variable is not set. Please configure it in your deployment settings.",
+    );
   }
 
   return new MarsPhotosClient({ apiKey });

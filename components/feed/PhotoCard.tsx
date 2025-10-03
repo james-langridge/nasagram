@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import type { Photo } from "mars-photo-sdk";
@@ -18,15 +20,20 @@ interface PhotoCardProps {
 export function PhotoCard({ photo }: PhotoCardProps) {
   const roverProfile = ROVER_PROFILES[photo.rover.name.toLowerCase()];
 
-  // Build photo detail URL with metadata
-  const photoDetailUrl = `/photo/${photo.id}?${new URLSearchParams({
-    img: photo.imgSrc || "",
-    rover: photo.rover.name,
-    camera: photo.camera.name,
-    cameraFull: photo.camera.fullName || photo.camera.name,
-    sol: photo.sol.toString(),
-    earthDate: photo.earthDate || "",
-  }).toString()}`;
+  // Cache photo when clicked for deep linking support
+  const handlePhotoClick = async () => {
+    // Let the link navigate normally, but cache in background
+    fetch("/api/photos/cache", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(photo),
+    }).catch((error) => {
+      console.error("Failed to cache photo:", error);
+    });
+  };
+
+  // Clean photo detail URL
+  const photoDetailUrl = `/photo/${photo.id}`;
 
   return (
     <article className="bg-white border border-gray-200 mb-4">
@@ -69,7 +76,7 @@ export function PhotoCard({ photo }: PhotoCardProps) {
       </div>
 
       {/* Photo - clickable to detail page */}
-      <Link href={photoDetailUrl} className="block">
+      <Link href={photoDetailUrl} className="block" onClick={handlePhotoClick}>
         <div className="relative aspect-square bg-gray-100">
           {photo.imgSrc && (
             <Image

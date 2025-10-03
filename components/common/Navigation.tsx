@@ -19,9 +19,10 @@ export function Navigation({ session }: NavigationProps) {
   }
 
   // Show view toggle on pages with photo grids
-  const showViewToggle = pathname === "/" ||
-                         pathname === "/favorites" ||
-                         pathname?.match(/^\/[^/]+$/); // Rover profile pages
+  const showViewToggle =
+    pathname === "/" ||
+    pathname === "/favorites" ||
+    pathname?.match(/^\/[^/]+$/); // Rover profile pages
 
   return (
     <nav className="border-b border-gray-200 bg-white sticky top-0 z-10">

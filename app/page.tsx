@@ -23,7 +23,7 @@ export default function Home() {
   const allPhotos = data?.pages.flatMap((page) => page.photos) || [];
 
   // Debug info for production
-  console.log('[Home] Query state:', {
+  console.log("[Home] Query state:", {
     isPending,
     isError,
     hasData: !!data,
@@ -39,7 +39,9 @@ export default function Home() {
           <div className="bg-red-50 text-red-600 p-4 rounded-lg">
             <p className="font-semibold">Error loading photos</p>
             <p className="text-sm mt-2">
-              {error instanceof Error ? error.message : 'Please try again later'}
+              {error instanceof Error
+                ? error.message
+                : "Please try again later"}
             </p>
           </div>
         </div>

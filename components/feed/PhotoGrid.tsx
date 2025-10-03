@@ -1,6 +1,9 @@
 import type { Photo } from "mars-photo-sdk";
 import { PhotoCard } from "./PhotoCard";
-import { getPhotoKey, generateBlurDataUrl } from "@/lib/calculations/photo-utils";
+import {
+  getPhotoKey,
+  generateBlurDataUrl,
+} from "@/lib/calculations/photo-utils";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -21,16 +24,28 @@ export function PhotoGrid({ photos, viewMode = "feed" }: PhotoGridProps) {
 
   // Grid view: 3-column grid of square images
   if (viewMode === "grid") {
+    const handlePhotoClick = (photo: Photo) => {
+      // Cache photo in background when clicked
+      fetch("/api/photos/cache", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(photo),
+      }).catch((error) => {
+        console.error("Failed to cache photo:", error);
+      });
+    };
+
     return (
       <div className="max-w-2xl mx-auto">
         <div className="grid grid-cols-3 gap-1">
           {photos.map((photo) => {
-            const photoUrl = `/photo/${photo.id}?img=${encodeURIComponent(photo.imgSrc || photo.img_src || "")}&rover=${photo.rover.name}&camera=${photo.camera.name}&sol=${photo.sol}&earthDate=${photo.earthDate || photo.earth_date || ""}`;
+            const photoUrl = `/photo/${photo.id}`;
 
             return (
               <Link
                 key={getPhotoKey(photo)}
                 href={photoUrl}
+                onClick={() => handlePhotoClick(photo)}
                 className="relative aspect-square bg-gray-100 hover:opacity-90 transition-opacity"
               >
                 <Image

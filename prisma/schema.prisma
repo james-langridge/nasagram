@@ -78,3 +78,19 @@ model Favorite {
   @@unique([userId, photoId])
   @@index([userId])
 }
+
+// Photo metadata cache for deep linking support
+// Stores lightweight photo data for any viewed photo
+model PhotoCache {
+  photoId        Int      @id
+  roverId        String
+  photoUrl       String
+  photoSol       Int
+  photoEarthDate String
+  cameraName     String
+  cameraFullName String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([photoId])
+}
