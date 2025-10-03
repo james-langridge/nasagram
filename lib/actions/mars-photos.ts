@@ -84,7 +84,8 @@ export async function fetchLatestPhotos(
   const manifest = await client.manifests.get(rover);
   const latestSol = manifest.maxSol || manifest.max_sol || 1000;
 
-  const SOLS_PER_PAGE = 2;
+  // Fetch more sols when camera filter is active (many sols have no photos from specific camera)
+  const SOLS_PER_PAGE = camera ? 5 : 2;
   const solOffset = (page - 1) * SOLS_PER_PAGE;
 
   // Fetch photos from multiple sols for this page
