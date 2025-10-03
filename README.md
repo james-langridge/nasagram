@@ -236,4 +236,6 @@ Database should be PostgreSQL-compatible (tested with Vercel Postgres).
 
 ## License
 
+MIT License - Copyright (c) 2025 James Langridge
+
 This project uses the NASA API which provides public domain data.
