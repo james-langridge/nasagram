@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { ShareButton } from "@/components/common/ShareButton";
 import { FavoriteButton } from "@/components/feed/FavoriteButton";
@@ -21,6 +22,7 @@ export function PhotoDetailContent({
   photo,
   initialFavorited = false,
 }: PhotoDetailContentProps) {
+  const router = useRouter();
   const roverProfile = ROVER_PROFILES[photo.rover.name.toLowerCase()];
 
   return (
@@ -29,13 +31,13 @@ export function PhotoDetailContent({
       <div className="fixed top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/80 to-transparent">
         <div className="max-w-2xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between text-white">
-            <Link
-              href="/"
+            <button
+              onClick={() => router.back()}
               className="flex items-center gap-2 hover:text-gray-300 transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
               <span className="text-sm font-medium">Back</span>
-            </Link>
+            </button>
             <div className="flex items-center gap-4">
               <FavoriteButton
                 photo={photo}
