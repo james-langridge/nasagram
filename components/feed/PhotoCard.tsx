@@ -23,7 +23,18 @@ interface PhotoCardProps {
 export function PhotoCard({ photo }: PhotoCardProps) {
   const router = useRouter();
   const [isNavigating, setIsNavigating] = useState(false);
+  const [aspectRatio, setAspectRatio] = useState<number | undefined>(
+    undefined
+  );
   const roverProfile = ROVER_PROFILES[photo.rover.name.toLowerCase()];
+
+  // Calculate constrained aspect ratio from image dimensions
+  const handleImageLoad = (img: HTMLImageElement) => {
+    const naturalRatio = img.naturalWidth / img.naturalHeight;
+    // Constrain between 0.8 (portrait) and 1.91 (landscape) like Instagram
+    const constrained = Math.min(Math.max(naturalRatio, 0.8), 1.91);
+    setAspectRatio(constrained);
+  };
 
   // Cache photo before navigation to ensure it's available
   const handlePhotoClick = async (e: React.MouseEvent) => {
@@ -105,7 +116,12 @@ export function PhotoCard({ photo }: PhotoCardProps) {
 
       {/* Photo - clickable to detail page */}
       <Link href={photoDetailUrl} className="block" onClick={handlePhotoClick}>
-        <div className="relative aspect-square bg-gray-100">
+        <div
+          className="relative bg-gray-100"
+          style={{
+            aspectRatio: aspectRatio ? aspectRatio.toString() : "1",
+          }}
+        >
           {photo.imgSrc && (
             <Image
               src={normalizeImageUrl(photo.imgSrc)}
@@ -116,6 +132,7 @@ export function PhotoCard({ photo }: PhotoCardProps) {
               loading="lazy"
               placeholder="blur"
               blurDataURL={generateBlurDataUrl()}
+              onLoad={(e) => handleImageLoad(e.currentTarget)}
             />
           )}
           {/* Loading overlay */}
