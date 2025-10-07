@@ -132,6 +132,7 @@ export function PhotoCard({ photo }: PhotoCardProps) {
               loading="lazy"
               placeholder="blur"
               blurDataURL={generateBlurDataUrl()}
+              quality={90}
               onLoad={(e) => handleImageLoad(e.currentTarget)}
             />
           )}
